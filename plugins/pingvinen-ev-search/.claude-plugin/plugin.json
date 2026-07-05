@@ -7,5 +7,11 @@
   },
   "homepage": "https://github.com/pingvinen/ev-search-skills",
   "license": "PolyForm-Noncommercial-1.0.0",
-  "keywords": ["ev", "electric-vehicle", "denmark", "research", "car"]
+  "keywords": [
+    "ev",
+    "electric-vehicle",
+    "denmark",
+    "research",
+    "car"
+  ]
 }
