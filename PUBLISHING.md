@@ -10,35 +10,18 @@ need this file — it's for the maintainer.
 | `pingvinen/ev-search-skills` | This repo — skills, templates, installer CLI, docs | public |
 | `pingvinen/homebrew-tap` | Homebrew tap holding the formula | public |
 
-## First publish (this repo)
+## Current status
 
-Done from a session that can push (git PAT). The public repo starts from a single
-clean commit — no personal data in history.
+Both repos are live. The tap (`pingvinen/homebrew-tap`) already holds the formula
+(`Formula/ev-search-skills.rb`, HEAD-only), so users install with:
 
 ```bash
-cd /path/to/ev-search-skills-clone
-git add -A
-git commit -m "Initial public release: EV research skills"
-git push origin main
+brew tap pingvinen/tap
+brew install --HEAD ev-search-skills
 ```
 
-## Wire up the Homebrew tap
-
-1. Create the tap repo and add the formula (see `dist/homebrew-tap/README.md`):
-
-   ```bash
-   gh repo create pingvinen/homebrew-tap --public --clone
-   cd homebrew-tap && mkdir -p Formula
-   cp ../ev-search-skills/dist/homebrew-tap/Formula/ev-search-skills.rb Formula/
-   git add -A && git commit -m "Add ev-search-skills formula" && git push
-   ```
-
-2. Users can now install from `main` immediately:
-
-   ```bash
-   brew tap pingvinen/tap
-   brew install --HEAD ev-search-skills
-   ```
+Formula changes are made directly in the tap repo. This repo no longer carries a
+`dist/` copy of the formula — the tap is the single source of truth.
 
 ## Stable releases (deferred until CI/CD)
 

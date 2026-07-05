@@ -13,18 +13,20 @@
 <!-- GSD:project-start source:PROJECT.md -->
 ## Project
 
-**Car Research Skills**
+**EV Research Skills**
 
-A suite of Claude Code skills local to this repo that help research and compare electric vehicles. The skills read search parameters from `car_search.md`, fetch data from known EV sites (ev-database.org, FDM, greengarage.dk), and produce per-car research files and comparison tables. A living tool that stays useful as new models release.
+A suite of Claude Code skills — **published via Homebrew** (`pingvinen/homebrew-tap`) and installed globally into `~/.claude/skills` — that help research and compare electric vehicles for the Danish market. The skills fetch data from known EV sites (ev-database.org, FDM, greengarage.dk) and produce per-car research files and comparison tables. A living tool that stays useful as new models release.
+
+The skills are decoupled from research data: they ship via the package, while each user's searches live in their own workspace (see below). This repo is both the skill source **and** a usable workspace, but the intended consumer experience is `ev-search-skills install` (skills → global) + `ev-search-skills scaffold` (seed a workspace anywhere).
 
 **Core Value:** Quickly go from "what EVs match my criteria?" to informed, comparable research files — without manually trawling multiple sites.
 
 ### Constraints
 
-- **Platform**: Claude Code skills (`.claude/commands/` local to this repo)
+- **Platform**: Claude Code skills (`.claude/skills/`), distributed via Homebrew and installed globally; the `ev-search-skills` CLI (`bin/`) handles install/uninstall/scaffold
 - **Data freshness**: Skills must fetch live data, not rely on training data
-- **Input**: All search criteria come from `car_search.md` — no hardcoded parameters
-- **Output**: Per-car files in `research/`, comparison tables in repo root or `research/`
+- **Input**: All search criteria come from a project's `brief.md` (created by `/ev-new-project`) — no hardcoded parameters. `state.md` tracks the active project
+- **Output**: Per-car files and comparison tables under `projects/<name>/` in the user's workspace — never committed back into the skills package
 <!-- GSD:project-end -->
 
 <!-- GSD:stack-start source:research/STACK.md -->
@@ -39,11 +41,11 @@ A suite of Claude Code skills local to this repo that help research and compare 
 | Claude WebFetch tool | `web_fetch_20260209` (current) | Fetching server-rendered pages | Built into Claude Code sessions; no API key; handles HTML→text extraction natively; newer version supports dynamic filtering to reduce token cost |
 | Claude WebSearch tool | Native to Claude Code | Discovering article URLs on FDM.dk before fetching | Handles dynamic/JS sites indirectly — find the URL via search, then fetch the static article |
 | Bash (curl) | macOS built-in | Fallback for sites that block WebFetch | Claude Code's Bash tool can curl; useful when WebFetch gets bot-blocked |
-| Markdown files | Plain text | Parameter input (`car_search.md`) and output (`research/*.md`) | Zero dependencies; version-controllable; Claude reads/writes natively |
+| Markdown files | Plain text | Parameter input (`projects/<name>/brief.md`) and output (`projects/<name>/research/*.md`) | Zero dependencies; version-controllable; Claude reads/writes natively |
 ### Supporting Libraries / Patterns
 | Pattern | Purpose | When to Use |
 |---------|---------|-------------|
-| `!`backtick injection` in SKILL.md` | Inject live data before Claude sees the prompt (e.g., `!`cat car_search.md``) | Reading `car_search.md` at skill invocation time |
+| `!`backtick injection` in SKILL.md` | Inject live data before Claude sees the prompt (e.g., `!`cat state.md``) | Reading the active project from `state.md` at skill invocation time; `brief.md` is then read with the Read tool |
 | `$ARGUMENTS` substitution | Pass a car model name to the detail skill | `/ev-detail "Renault 5 52kWh"` |
 | Supporting files in skill directory | Keep SKILL.md under 500 lines; offload site-specific URL patterns to `sites.md` | When site-specific logic grows large |
 | `context: fork` + `agent: Explore` | Run research in isolated subagent without main session history | The detail skill fetching 5+ URLs for one car |
@@ -51,8 +53,8 @@ A suite of Claude Code skills local to this repo that help research and compare 
 ### Development Tools
 | Tool | Purpose | Notes |
 |------|---------|-------|
-| Claude Code itself | Interactive development and testing of skills | Run `/ev-search "budget 300000 DKK range 300km"` to test live |
-| Git | Versioning research outputs | `research/*.md` files benefit from diff-ability; commit after each research session |
+| Claude Code itself | Interactive development and testing of skills | Run `/ev-new-project` then `/ev-search` in a scaffolded workspace to test live |
+| Git | Versioning research outputs | `projects/<name>/research/*.md` files benefit from diff-ability; commit after each research session |
 ## Skill Structure
 ### Location and Format
 ### Minimal SKILL.md Structure
@@ -71,7 +73,7 @@ A suite of Claude Code skills local to this repo that help research and compare 
 ### greengarage.dk — LOW priority, supplementary use only
 ### Bash/curl as fallback
 ## Markdown Output Patterns
-### Per-car file: `research/[make-model].md`
+### Per-car file: `projects/<name>/research/[make-model].md`
 # [Make Model Variant]
 ## Quick Verdict
 ## Specs
@@ -93,7 +95,7 @@ A suite of Claude Code skills local to this repo that help research and compare 
 - ...
 ## Cons
 - ...
-### Comparison table: `research/comparison.md`
+### Comparison table: `projects/<name>/research/comparison.md`
 ## Alternatives Considered
 | Recommended | Alternative | When to Use Alternative |
 |-------------|-------------|-------------------------|
@@ -107,23 +109,23 @@ A suite of Claude Code skills local to this repo that help research and compare 
 |-------|-----|-------------|
 | Scraping ev-database.org with Playwright/Puppeteer | The site is server-rendered — no JS execution needed; adding a headless browser is unnecessary complexity | Native WebFetch |
 | Fetching fdm.dk listing index directly | Nuxt.js SPA — WebFetch does not execute JavaScript; listing cards are not in the server-rendered HTML | WebSearch to find article URLs |
-| Hardcoded car model lists in skills | Breaks the "living tool" requirement; new models need constant maintenance | Read criteria from `car_search.md` dynamically via `!`cat car_search.md`` |
-| Storing results as JSON or YAML | Requires parsing step before Claude can reason over them; markdown is natively readable in context | `research/*.md` markdown files |
+| Hardcoded car model lists in skills | Breaks the "living tool" requirement; new models need constant maintenance | Read criteria from the active project's `brief.md` (resolved via `state.md`) |
+| Storing results as JSON or YAML | Requires parsing step before Claude can reason over them; markdown is natively readable in context | `projects/<name>/research/*.md` markdown files |
 | `context: fork` on the ev-search skill | Search is exploratory; benefits from conversation context (user can ask follow-ups). Fork mode loses this | Inline execution (default) for search; fork only for detail fetching |
 | Multiple separate WebFetch calls without `max_content_tokens` | Large pages (ev-database.org listing) can consume 25,000+ tokens each; unguarded multi-fetch will exhaust context | Set `max_content_tokens` or fetch category-specific pages |
 ## Stack Patterns by Skill Type
 - Execution: inline (no `context: fork`) — user may want to ask follow-up questions
 - Tools: `WebFetch, WebSearch, Read`
-- Input: `!`cat car_search.md`` to inject criteria
-- Output: list of matching models in the conversation (not written to files)
+- Input: `!`cat state.md`` to resolve the active project, then Read `projects/<name>/brief.md` for criteria
+- Output: Search Candidates written to `projects/<name>/state.md`
 - Execution: `context: fork`, `agent: Explore` — multiple URL fetches in isolation
 - Tools: `WebFetch, WebSearch, Read, Write`
 - Input: `$ARGUMENTS` = car model name
-- Output: writes `research/[model].md`
+- Output: writes `projects/<name>/research/[model].md`
 - Execution: inline
 - Tools: `Read, Write, Glob`
-- Input: reads all `research/*.md`
-- Output: writes or overwrites `research/comparison.md`
+- Input: reads all `projects/<name>/research/*.md`
+- Output: writes or overwrites `projects/<name>/research/comparison.md`
 - Frontmatter: `disable-model-invocation: true` — never auto-trigger file writes
 ## Version Compatibility Notes
 | Concern | Detail |

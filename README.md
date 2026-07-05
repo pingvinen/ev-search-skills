@@ -56,14 +56,14 @@ cd my-ev-search
 claude
 ```
 
-Or copy `.claude/skills/`, `state.md`, `car-template.md`, and `search_criteria.md` into
-an existing workspace's root.
+Or copy `.claude/skills/`, `state.md`, and `car-template.md` into an existing
+workspace's root.
 
 ## How it works
 
-- **Criteria in, research out.** Your needs live in `search_criteria.md` (a template is
-  included) or in a project's `brief.md` created by `/ev-new-project`. Skills read these —
-  nothing is hardcoded.
+- **Criteria in, research out.** Your needs live in a project's `brief.md`, created by
+  `/ev-new-project` when you answer its prompts. Skills read from there — nothing is
+  hardcoded.
 - **Projects.** Each search is a folder under `projects/<name>/` with its own `brief.md`,
   `research/*.md`, and `comparison.md`. `state.md` tracks which project is active.
 - **Your research stays local.** `projects/*` is git-ignored by default, so your actual

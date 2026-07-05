@@ -68,9 +68,8 @@ cmd_scaffold() {
   local dir="${1:-.}"
   mkdir -p "$dir/projects"
   [[ -e "$dir/projects/.gitkeep" ]] || : > "$dir/projects/.gitkeep"
-  _seed "$EV_SKILLS_HOME/state.md"           "$dir/state.md"
-  _seed "$EV_SKILLS_HOME/search_criteria.md" "$dir/search_criteria.md"
-  _seed "$EV_SKILLS_HOME/car-template.md"    "$dir/car-template.md"
+  _seed "$EV_SKILLS_HOME/state.md"        "$dir/state.md"
+  _seed "$EV_SKILLS_HOME/car-template.md" "$dir/car-template.md"
   printf '\nWorkspace ready in %s\n' "$dir"
   printf 'Start Claude Code there and run:  /ev-new-project my-2026-search\n'
 }
@@ -81,7 +80,7 @@ ev-search-skills $VERSION — EV research skills for Claude Code
 
 Usage:
   ev-search-skills install            Install the /ev-* skills into ~/.claude/skills
-  ev-search-skills scaffold [dir]     Seed a research workspace (state.md, criteria, projects/)
+  ev-search-skills scaffold [dir]     Seed a research workspace (state.md, car-template.md, projects/)
   ev-search-skills uninstall          Remove the /ev-* skills from ~/.claude/skills
   ev-search-skills version            Print version
   ev-search-skills help               Show this help
