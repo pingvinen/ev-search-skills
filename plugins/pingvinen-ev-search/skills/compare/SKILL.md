@@ -1,6 +1,6 @@
 ---
-name: ev-compare
-description: Generate a comparison table from researched cars in the active project. Reads all research/*.md files and writes comparison.md as a side-by-side decision-support table with one column per car, labelled range rows, and a brief-aware verdict. Must be invoked explicitly with /ev-compare — never auto-triggered.
+name: compare
+description: Generate a comparison table from researched cars in the active project. Reads all research/*.md files and writes comparison.md as a side-by-side decision-support table with one column per car, labelled range rows, and a brief-aware verdict. Must be invoked explicitly with /pingvinen-ev-search:compare — never auto-triggered.
 allowed-tools: Read, Write, Glob
 disable-model-invocation: true
 ---
@@ -18,7 +18,7 @@ From the injected global state above, extract the `active_project` value.
 
 If `active_project` is `none` or the state file was not found: stop immediately and tell the user:
 
-> No active project found. Run `/ev-new-project [name]` to create a project first, or `/ev-switch-project [name]` to switch to an existing project.
+> No active project found. Run `/pingvinen-ev-search:new-project [name]` to create a project first, or `/pingvinen-ev-search:switch-project [name]` to switch to an existing project.
 
 Do not proceed past Step 1 if no active project exists.
 
@@ -32,7 +32,7 @@ Glob `projects/<active_project>/research/*.md` — replacing `<active_project>` 
 
 If Glob returns zero files, stop and tell the user:
 
-> No research files found in `projects/<active_project>/research/`. Research some cars first by running `/ev-search` to find candidates, then `/ev-research "Car A" "Car B"` to fetch their specs.
+> No research files found in `projects/<active_project>/research/`. Research some cars first by running `/pingvinen-ev-search:search` to find candidates, then `/pingvinen-ev-search:research "Car A" "Car B"` to fetch their specs.
 
 If Glob returns exactly one file, note that a comparison of one car is trivial but still produce the single-column table — one column is valid output.
 
@@ -44,7 +44,7 @@ Record the full list of file paths returned. The count of paths is the number of
 
 For each file path from Step 2, use the Read tool to load the file content.
 
-From each file, extract the following fields (matching the rows in `car-template.md`):
+From each file, extract the following fields (matching the rows in the per-car template shipped with the plugin, `${CLAUDE_PLUGIN_ROOT}/reference/car-template.md`):
 
 **15 Specs rows:**
 1. WLTP range (km)
@@ -149,7 +149,7 @@ Construct the output file header block:
 
 **Step 6 — Write comparison.md (COMP-03)**
 
-Write the complete file in a single Write call to `projects/<active_project>/comparison.md`. Overwrite unconditionally — this skill runs only on explicit `/ev-compare` invocation (`disable-model-invocation: true` prevents accidental triggers, D-18).
+Write the complete file in a single Write call to `projects/<active_project>/comparison.md`. Overwrite unconditionally — this skill runs only on explicit `/pingvinen-ev-search:compare` invocation (`disable-model-invocation: true` prevents accidental triggers, D-18).
 
 File structure:
 1. Header block (from Step 5)

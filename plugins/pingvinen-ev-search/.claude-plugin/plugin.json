@@ -1,0 +1,11 @@
+{
+  "name": "pingvinen-ev-search",
+  "description": "Research and compare electric vehicles for the Danish market. Fetches live data from ev-database.org, FDM, and greengarage.dk to produce sourced per-car research files and comparison tables.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Pingvinen"
+  },
+  "homepage": "https://github.com/pingvinen/ev-search-skills",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "keywords": ["ev", "electric-vehicle", "denmark", "research", "car"]
+}

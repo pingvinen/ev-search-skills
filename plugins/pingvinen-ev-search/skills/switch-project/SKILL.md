@@ -1,5 +1,5 @@
 ---
-name: ev-switch-project
+name: switch-project
 description: Switch the active EV research project. Use when the user says "switch to project X" or "change project".
 allowed-tools: Write, Read, Bash(ls *)
 disable-model-invocation: true
@@ -18,7 +18,7 @@ Follow these steps in order:
 If `$ARGUMENTS` is empty or not provided:
 - Run `Bash(ls projects/ 2>/dev/null || echo "No projects found")` to list existing projects.
 - If projects exist: ask the user which project to switch to, showing the list.
-- If no projects exist: tell the user there are no projects yet and suggest `/ev-new-project [name]` to create one.
+- If no projects exist: tell the user there are no projects yet and suggest `/pingvinen-ev-search:new-project [name]` to create one.
 - Stop here and wait for user input. Do not proceed with the steps below until a project name is provided.
 
 ---
@@ -34,7 +34,7 @@ If the directory does NOT exist (command returns no output):
 > Project "$ARGUMENTS" does not exist. Available projects:
 > [list from ls output]
 >
-> To create a new project, run `/ev-new-project "$ARGUMENTS"`.
+> To create a new project, run `/pingvinen-ev-search:new-project "$ARGUMENTS"`.
 
 Stop here. Do not modify `state.md` if the project doesn't exist.
 
@@ -60,4 +60,4 @@ Then run `Bash(ls projects/$ARGUMENTS/research/ 2>/dev/null || echo "No cars res
 > **Research files in this project:**
 > [file list, or "No cars researched yet" if empty]
 
-Suggest the user run `/ev-search` to find cars or `/ev-detail [car model]` to research a specific car.
+Suggest the user run `/pingvinen-ev-search:search` to find cars or `/pingvinen-ev-search:detail [car model]` to research a specific car.

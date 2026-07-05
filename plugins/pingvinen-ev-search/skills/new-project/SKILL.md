@@ -1,7 +1,7 @@
 ---
-name: ev-new-project
+name: new-project
 description: Create a new EV research project. Use when the user wants to start researching a new set of cars with different criteria.
-allowed-tools: Write, Read, Bash(mkdir *, ls *)
+allowed-tools: Write, Read, Bash(ev-scaffold*, mkdir *, ls *)
 disable-model-invocation: true
 argument-hint: [project-name]
 ---
@@ -12,13 +12,20 @@ Project name requested: $ARGUMENTS
 
 Follow these steps in order:
 
+**Step 0 — Ensure the workspace is seeded**
+
+Run `Bash(ev-scaffold)`. This bundled plugin tool creates the workspace's
+`state.md` if it is missing (it never overwrites existing files) and ensures a
+`projects/` directory exists. `state.md` is per-workspace state the skills read
+and update. Proceed once it completes.
+
 **Step 1 — Check for existing project (D-10: never overwrite)**
 
 Run `Bash(ls projects/$ARGUMENTS/ 2>/dev/null)`.
 
 If the directory EXISTS (command returns any output): Stop immediately. Tell the user:
 
-> Project "$ARGUMENTS" already exists. To resume work on it, run `/ev-switch-project "$ARGUMENTS"` instead. No files were changed.
+> Project "$ARGUMENTS" already exists. To resume work on it, run `/pingvinen-ev-search:switch-project "$ARGUMENTS"` instead. No files were changed.
 
 Do not proceed past Step 1 if the project exists.
 
@@ -49,7 +56,7 @@ Then write three files:
 ```
 # Comparison: $ARGUMENTS
 
-No cars researched yet. Run /ev-detail to add cars.
+No cars researched yet. Run /pingvinen-ev-search:detail to add cars.
 ```
 
 **Step 4 — Update global state.md**
@@ -67,10 +74,10 @@ Tell the user what was created:
 - `projects/$ARGUMENTS/brief.md` — fill in your search criteria here
 - `projects/$ARGUMENTS/research/` — car research files will go here
 - `projects/$ARGUMENTS/state.md` — tracks research progress
-- `projects/$ARGUMENTS/comparison.md` — comparison table (populated by /ev-compare)
+- `projects/$ARGUMENTS/comparison.md` — comparison table (populated by /pingvinen-ev-search:compare)
 - Global `state.md` updated — active project is now `$ARGUMENTS`
 
-Suggest they open `projects/$ARGUMENTS/brief.md` and fill in the criteria sections before running `/ev-search`.
+Suggest they open `projects/$ARGUMENTS/brief.md` and fill in the criteria sections before running `/pingvinen-ev-search:search`.
 
 ---
 

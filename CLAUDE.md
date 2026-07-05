@@ -15,18 +15,18 @@
 
 **EV Research Skills**
 
-A suite of Claude Code skills — **published via Homebrew** (`pingvinen/homebrew-tap`) and installed globally into `~/.claude/skills` — that help research and compare electric vehicles for the Danish market. The skills fetch data from known EV sites (ev-database.org, FDM, greengarage.dk) and produce per-car research files and comparison tables. A living tool that stays useful as new models release.
+A Claude Code **plugin** (`pingvinen-ev-search`), published through the shared `pingvinen/claude-plugins` marketplace, that helps research and compare electric vehicles for the Danish market. The skills fetch data from known EV sites (ev-database.org, FDM, greengarage.dk) and produce per-car research files and comparison tables. A living tool that stays useful as new models release.
 
-The skills are decoupled from research data: they ship via the package, while each user's searches live in their own workspace (see below). This repo is both the skill source **and** a usable workspace, but the intended consumer experience is `ev-search-skills install` (skills → global) + `ev-search-skills scaffold` (seed a workspace anywhere).
+The plugin is decoupled from research data: the skills, the `bin/ev-scaffold` seeder, and the templates ship in the plugin, while each user's searches live in their own workspace (see below). Users install with `/plugin marketplace add pingvinen/claude-plugins` + `/plugin install pingvinen-ev-search@pingvinen`, then run `/pingvinen-ev-search:new-project` — which seeds the workspace via `ev-scaffold` and creates the first project. For local development, `claude --plugin-dir plugins/pingvinen-ev-search` loads the plugin straight from a checkout. Releases are cut by `semantic-release` (`.github/workflows/release.yml`): it bumps the version in `plugin.json`, tags `vX.Y.Z`, and opens a PR to the marketplace repo pinning that tag — so `main` here stays a work branch.
 
 **Core Value:** Quickly go from "what EVs match my criteria?" to informed, comparable research files — without manually trawling multiple sites.
 
 ### Constraints
 
-- **Platform**: Claude Code skills (`.claude/skills/`), distributed via Homebrew and installed globally; the `ev-search-skills` CLI (`bin/`) handles install/uninstall/scaffold
+- **Platform**: A Claude Code plugin (`plugins/pingvinen-ev-search/`) published through the separate `pingvinen/claude-plugins` marketplace repo (which pins the plugin to a released `vX.Y.Z` tag); skills invoked as `/pingvinen-ev-search:<name>`. A bundled `bin/ev-scaffold` tool (on the Bash-tool PATH when the plugin is enabled) seeds a workspace deterministically
 - **Data freshness**: Skills must fetch live data, not rely on training data
-- **Input**: All search criteria come from a project's `brief.md` (created by `/ev-new-project`) — no hardcoded parameters. `state.md` tracks the active project
-- **Output**: Per-car files and comparison tables under `projects/<name>/` in the user's workspace — never committed back into the skills package
+- **Input**: All search criteria come from a project's `brief.md` (created by `/pingvinen-ev-search:new-project`) — no hardcoded parameters. `state.md` tracks the active project
+- **Output**: Per-car files and comparison tables under `projects/<name>/` in the user's workspace — never committed back into the plugin
 <!-- GSD:project-end -->
 
 <!-- GSD:stack-start source:research/STACK.md -->
@@ -46,14 +46,14 @@ The skills are decoupled from research data: they ship via the package, while ea
 | Pattern | Purpose | When to Use |
 |---------|---------|-------------|
 | `!`backtick injection` in SKILL.md` | Inject live data before Claude sees the prompt (e.g., `!`cat state.md``) | Reading the active project from `state.md` at skill invocation time; `brief.md` is then read with the Read tool |
-| `$ARGUMENTS` substitution | Pass a car model name to the detail skill | `/ev-detail "Renault 5 52kWh"` |
+| `$ARGUMENTS` substitution | Pass a car model name to the detail skill | `/pingvinen-ev-search:detail "Renault 5 52kWh"` |
 | Supporting files in skill directory | Keep SKILL.md under 500 lines; offload site-specific URL patterns to `sites.md` | When site-specific logic grows large |
 | `context: fork` + `agent: Explore` | Run research in isolated subagent without main session history | The detail skill fetching 5+ URLs for one car |
 | `disable-model-invocation: true` | Prevent Claude from auto-triggering write-side skills (comparison generator) | Any skill that creates/overwrites files |
 ### Development Tools
 | Tool | Purpose | Notes |
 |------|---------|-------|
-| Claude Code itself | Interactive development and testing of skills | Run `/ev-new-project` then `/ev-search` in a scaffolded workspace to test live |
+| Claude Code itself | Interactive development and testing of skills | Run `/pingvinen-ev-search:new-project` then `/pingvinen-ev-search:search` in a scaffolded workspace to test live |
 | Git | Versioning research outputs | `projects/<name>/research/*.md` files benefit from diff-ability; commit after each research session |
 ## Skill Structure
 ### Location and Format

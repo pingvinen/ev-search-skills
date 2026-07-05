@@ -1,11 +1,11 @@
 ---
-name: ev-search
+name: search
 description: Search for EV models matching the active project's criteria. Use when the user wants to find matching cars, run a search, or discover candidates. Reads brief.md and writes Search Candidates to state.md.
 allowed-tools: WebFetch, WebSearch, Read, Write, Bash(curl *, python3 *, ls *)
 ---
 
 Current global state:
-!`cat state.md 2>/dev/null || echo "state.md not found — no active project. Run /ev-new-project first."`
+!`cat state.md 2>/dev/null || echo "state.md not found — no active project. Run /pingvinen-ev-search:new-project first."`
 
 Follow these steps in order. Do NOT skip steps or reorder them.
 
@@ -17,7 +17,7 @@ From the injected global state above, extract the `active_project` value.
 
 If `active_project` is `none` or the state file was not found: stop immediately and tell the user:
 
-> No active project found. Run `/ev-new-project [name]` to create a project first, or `/ev-switch-project [name]` to switch to an existing project.
+> No active project found. Run `/pingvinen-ev-search:new-project [name]` to create a project first, or `/pingvinen-ev-search:switch-project [name]` to switch to an existing project.
 
 Do not proceed.
 
@@ -248,9 +248,9 @@ Present the candidates to the user in conversation, grouped as three sections:
 After the grouped list, output a copy-paste ready handoff command listing only the match and borderline candidates (NOT excluded):
 
 ```
-/ev-research "[Match Car 1]" "[Match Car 2]" "[Borderline Car 1]"
+/pingvinen-ev-search:research "[Match Car 1]" "[Match Car 2]" "[Borderline Car 1]"
 ```
 
-Use the exact model names as they appear in the ev-database listing (e.g., "Volvo EX30 Single Motor ER", "Renault 5 E-Tech 52kWh 150hp"). Quote each name individually so `/ev-research` can handle them as separate arguments.
+Use the exact model names as they appear in the ev-database listing (e.g., "Volvo EX30 Single Motor ER", "Renault 5 E-Tech 52kWh 150hp"). Quote each name individually so `/pingvinen-ev-search:research` can handle them as separate arguments.
 
 Tell the user: "Run the handoff command above to research the selected cars in depth, or pick a subset."
