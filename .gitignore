@@ -6,3 +6,4 @@ projects/*
 
 # Test fixtures: throwaway project dirs used to exercise the skills (golden runs).
 projects/test-*/
+.idea
