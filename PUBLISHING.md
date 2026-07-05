@@ -1,65 +1,86 @@
 # Publishing & maintenance
 
-How this repo gets published and how the Homebrew install works. Consumers don't
-need this file — it's for the maintainer.
+How this repo gets published as a Claude Code plugin marketplace. Consumers don't need
+this file — it's for the maintainer.
 
-## Repos involved
+## What this repo is
 
-| Repo | Purpose | Visibility |
-|------|---------|------------|
-| `pingvinen/ev-search-skills` | This repo — skills, templates, installer CLI, docs | public |
-| `pingvinen/homebrew-tap` | Homebrew tap holding the formula | public |
+This repository is a **Claude Code plugin marketplace** named `pingvinen`. It hosts a
+single plugin, `pingvinen-ev-search`.
 
-## Current status
-
-Both repos are live. The tap (`pingvinen/homebrew-tap`) already holds the formula
-(`Formula/ev-search-skills.rb`, HEAD-only), so users install with:
-
-```bash
-brew tap pingvinen/tap
-brew install --HEAD ev-search-skills
+```
+.claude-plugin/marketplace.json        # marketplace catalog (name: pingvinen)
+plugins/pingvinen-ev-search/
+  .claude-plugin/plugin.json           # plugin manifest (name: pingvinen-ev-search)
+  skills/<name>/SKILL.md               # the six skills → /pingvinen-ev-search:<name>
+  bin/ev-scaffold                      # workspace seeder, on the Bash-tool PATH
+  templates/{state.md,car-template.md} # seed files
 ```
 
-Formula changes are made directly in the tap repo. This repo no longer carries a
-`dist/` copy of the formula — the tap is the single source of truth.
+The plugin `name` (`pingvinen-ev-search`) is the invocation namespace and the directory
+name under `~/.claude/skills/`. The vendor prefix is baked into the plugin name itself —
+not just the marketplace — so it does not collide with anyone else's plugin regardless of
+which marketplace they publish from.
 
-## Stable releases (deferred until CI/CD)
+## How users install
 
-Launch is **HEAD-only** — the formula ships just a `head` stanza, so consumers use
-`brew install --HEAD ev-search-skills`. We intentionally do **not** tag a version yet.
-
-Versioning will be **SemVer** (`vMAJOR.MINOR.PATCH`), and tagging waits until the CI/CD
-pipeline (below) is in place so releases are automated and verified rather than hand-cut.
-
-When ready, the stable line is added by giving the formula a tagged tarball + sha256:
-
-```bash
-git tag v0.1.0 && git push origin v0.1.0
-gh release create v0.1.0 --generate-notes
-URL="https://github.com/pingvinen/ev-search-skills/archive/refs/tags/v0.1.0.tar.gz"
-curl -sL "$URL" | shasum -a 256   # → paste into the formula's sha256, add matching url
-brew audit --strict --online pingvinen/tap/ev-search-skills
+```
+/plugin marketplace add pingvinen/ev-search-skills
+/plugin install pingvinen-ev-search@pingvinen
 ```
 
-Also bump `VERSION` in `bin/ev-search-skills` to match the tag.
+`pingvinen/ev-search-skills` is the GitHub `owner/repo` of this marketplace repo;
+`@pingvinen` is the marketplace `name` from `marketplace.json`.
 
-## CI/CD pipeline (planned — prerequisite for stable tagging)
+## Releasing changes
+
+1. Edit skills / templates / `bin/ev-scaffold` under `plugins/pingvinen-ev-search/`.
+2. Bump `version` in `plugins/pingvinen-ev-search/.claude-plugin/plugin.json` (SemVer).
+   Claude Code uses the plugin version as the update cache key.
+3. Commit and push to `main`.
+4. Users pick it up with `/plugin marketplace update pingvinen` then
+   `/plugin update pingvinen-ev-search@pingvinen`.
+
+Validate locally before pushing:
+
+```bash
+claude plugin validate ./plugins/pingvinen-ev-search
+shellcheck plugins/pingvinen-ev-search/bin/ev-scaffold
+```
+
+## Retiring the old Homebrew distribution
+
+Earlier versions shipped the skills as loose files copied into `~/.claude/skills` via a
+Homebrew tap (`pingvinen/homebrew-tap`) and an `ev-search-skills` CLI. That model is
+**retired** in favour of the plugin marketplace. This repo no longer contains the CLI or
+Homebrew wiring.
+
+Remaining manual cleanup — **in the separate `pingvinen/homebrew-tap` repo** (not this one):
+
+- Remove `Formula/ev-search-skills.rb`.
+- Update that repo's README to point here (`/plugin marketplace add pingvinen/ev-search-skills`).
+
+For users who previously ran `ev-search-skills install`, the old loose skills still sit in
+`~/.claude/skills/ev-*`. They can remove them with:
+
+```bash
+rm -rf ~/.claude/skills/ev-new-project ~/.claude/skills/ev-switch-project \
+       ~/.claude/skills/ev-search ~/.claude/skills/ev-detail \
+       ~/.claude/skills/ev-research ~/.claude/skills/ev-compare
+brew uninstall ev-search-skills && brew untap pingvinen/tap   # if installed via Homebrew
+```
+
+## CI/CD (planned)
 
 Lives in `.github/workflows/` of this repo. Intended jobs:
 
-- **CI (push / PR):** `shellcheck bin/ev-search-skills`; run the CLI smoke tests
-  (`version`, `scaffold` into a temp dir, `install`→`uninstall` round-trip); optional
-  `brew audit`/`brew test` of the formula.
-- **Release (on tag `v*`):** create the GitHub release, compute the tarball sha256, and
-  open a PR (or push) to `pingvinen/homebrew-tap` updating the formula's `url` + `sha256`
-  (e.g. via a formula-bump action). This is what unblocks SemVer stable releases.
+- **CI (push / PR):** `claude plugin validate ./plugins/pingvinen-ev-search`;
+  `shellcheck plugins/pingvinen-ev-search/bin/ev-scaffold`; JSON lint of the manifests.
+- No release/tarball step is required — the marketplace serves directly from `main`.
 
-Until these exist, keep the tap HEAD-only.
+## Note on license
 
-## Note on license & Homebrew
-
-The suite is licensed **PolyForm Noncommercial 1.0.0** (non-commercial use only). That
-is *not* an OSI "open source" license, so this cannot live in `homebrew-core` — a
-personal tap (`homebrew-tap`) is the correct distribution channel and has no such
-restriction. The formula records `license :cannot_represent` because PolyForm has no
-SPDX identifier.
+The suite is licensed **PolyForm Noncommercial 1.0.0** (non-commercial use only). That is
+*not* an OSI "open source" license. Distribution as a git-hosted plugin marketplace has no
+such restriction — users just add the marketplace and install. The plugin manifest records
+`"license": "PolyForm-Noncommercial-1.0.0"`.

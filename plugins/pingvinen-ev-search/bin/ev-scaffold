@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# ev-scaffold — deterministically seed an EV research workspace.
+#
+# Bundled inside the pingvinen-ev-search plugin. While the plugin is enabled,
+# this file is on the Bash tool's PATH, so skills can invoke it as a bare
+# `ev-scaffold` command. It creates the workspace files the skills read
+# (state.md, car-template.md) and a projects/ directory.
+#
+# Idempotent: it NEVER overwrites an existing file — safe to run repeatedly.
+#
+set -euo pipefail
+
+# Templates ship with the plugin. ${CLAUDE_PLUGIN_ROOT} is set by Claude Code to
+# the plugin's install directory; fall back to this script's own location so the
+# tool also works when run directly from a checkout (e.g. via --plugin-dir).
+_root="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+TPL_DIR="$_root/templates"
+
+# Seed into the workspace Claude was launched in.
+DEST="${CLAUDE_PROJECT_DIR:-$PWD}"
+
+seed() {
+  local src="$1" dst="$2"
+  if [[ -e "$dst" ]]; then
+    printf '  kept existing %s\n' "$(basename "$dst")"
+  elif [[ -e "$src" ]]; then
+    cp "$src" "$dst"
+    printf '  created %s\n' "$(basename "$dst")"
+  else
+    printf '  warning: template missing: %s\n' "$src" >&2
+  fi
+}
+
+mkdir -p "$DEST/projects"
+seed "$TPL_DIR/state.md"        "$DEST/state.md"
+seed "$TPL_DIR/car-template.md" "$DEST/car-template.md"
+
+printf 'Workspace ready in %s\n' "$DEST"

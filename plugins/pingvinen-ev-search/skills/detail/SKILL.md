@@ -1,5 +1,5 @@
 ---
-name: ev-detail
+name: detail
 description: Research a specific EV model in depth. Use when the user asks to research a car, fetch specs for a model, or add a car to the active project. Writes a sourced per-car file to the active project.
 allowed-tools: WebFetch, WebSearch, Read, Write, Bash(ls *)
 context: fork
@@ -8,7 +8,7 @@ argument-hint: [car-model]
 ---
 
 Current global state:
-!`cat state.md 2>/dev/null || echo "state.md not found — no active project. Run /ev-new-project first."`
+!`cat state.md 2>/dev/null || echo "state.md not found — no active project. Run /pingvinen-ev-search:new-project first."`
 
 Car to research: $ARGUMENTS
 
@@ -28,7 +28,7 @@ From the injected global state above, extract the `active_project` value.
 
 If `active_project` is `none` or the state file was not found: stop immediately and tell the user:
 
-> No active project found. Run `/ev-new-project [name]` to create a project first, or `/ev-switch-project [name]` to switch to an existing project.
+> No active project found. Run `/pingvinen-ev-search:new-project [name]` to create a project first, or `/pingvinen-ev-search:switch-project [name]` to switch to an existing project.
 
 Do not proceed.
 
@@ -51,7 +51,7 @@ Derive the research filename from `$ARGUMENTS`:
 2. Replace spaces with hyphens.
 3. Strip parentheses, slashes, and dots (except preserve version numbers where meaningful — e.g., `52kwh` not `52kWh`, `+` becomes `plus`).
 4. Trim any leading or trailing hyphens.
-5. Include a battery variant in the filename only if the user explicitly typed it in `$ARGUMENTS` (e.g., `/ev-detail "Renault 5 52kWh"` → `renault-5-52kwh.md`; `/ev-detail "Renault 5"` → `renault-5.md`).
+5. Include a battery variant in the filename only if the user explicitly typed it in `$ARGUMENTS` (e.g., `/pingvinen-ev-search:detail "Renault 5 52kWh"` → `renault-5-52kwh.md`; `/pingvinen-ev-search:detail "Renault 5"` → `renault-5.md`).
 
 Examples:
 - "Volvo EX30" → `volvo-ex30.md`

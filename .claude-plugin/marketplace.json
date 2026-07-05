@@ -1,0 +1,19 @@
+{
+  "name": "pingvinen",
+  "owner": {
+    "name": "Pingvinen"
+  },
+  "metadata": {
+    "description": "Pingvinen's Claude Code plugins."
+  },
+  "plugins": [
+    {
+      "name": "pingvinen-ev-search",
+      "source": "./plugins/pingvinen-ev-search",
+      "description": "Research and compare electric vehicles for the Danish market — live-sourced per-car files and comparison tables.",
+      "author": {
+        "name": "Pingvinen"
+      }
+    }
+  ]
+}
