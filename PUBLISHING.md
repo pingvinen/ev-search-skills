@@ -14,7 +14,8 @@ plugins/pingvinen-ev-search/
   .claude-plugin/plugin.json           # plugin manifest (name: pingvinen-ev-search)
   skills/<name>/SKILL.md               # the six skills → /pingvinen-ev-search:<name>
   bin/ev-scaffold                      # workspace seeder, on the Bash-tool PATH
-  templates/{state.md,car-template.md} # seed files
+  templates/state.md                   # seeded into the workspace (mutable state)
+  reference/car-template.md            # per-car file format — shipped, not seeded
 ```
 
 The plugin `name` (`pingvinen-ev-search`) is the invocation namespace and the directory

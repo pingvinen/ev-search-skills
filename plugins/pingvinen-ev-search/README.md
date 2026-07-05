@@ -27,7 +27,7 @@ Invoked as `/pingvinen-ev-search:<skill>`:
 
 Then start Claude Code in an empty directory and run
 `/pingvinen-ev-search:new-project my-2026-search` — it seeds the workspace
-(`state.md`, `car-template.md`, `projects/`) via the bundled `ev-scaffold` tool
+(`state.md` and a `projects/` directory) via the bundled `ev-scaffold` tool
 and creates your first project.
 
 See the [repository README](https://github.com/pingvinen/ev-search-skills) for the

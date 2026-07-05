@@ -128,7 +128,7 @@ sub-section outside the main spec table.
 
 Extract the following fields (all are present on ev-database.org car pages):
 
-| car-template.md row | ev-database.org label |
+| template row | ev-database.org label |
 |---|---|
 | WLTP range (km) | Range (WLTP) |
 | Real-world range mild (km) | EVDB Real Range |
@@ -297,13 +297,13 @@ Before writing: assert that every populated spec cell in the Specs table has a c
 
 Write `projects/<active_project>/research/<filename>.md` (filename from Step 3).
 
-Conform section-by-section to `car-template.md`:
+Conform section-by-section to the per-car template shipped with the plugin (`${CLAUDE_PLUGIN_ROOT}/reference/car-template.md`):
 
 1. **Header:** `# <Make Model Variant>` (use the full selected variant name from Step 5), `**Researched:** <today>`, `**Project:** <active_project>`.
 
 2. **Quick Verdict:** 2–3 sentences — does this car meet the BRIEF's criteria? What stands out most?
 
-3. **Specs table:** all fields extracted in Steps 6–9. Fill in the Value and Source columns for every populated row. Use the car-template.md row names exactly.
+3. **Specs table:** all fields extracted in Steps 6–9. Fill in the Value and Source columns for every populated row. Use the template's row names exactly.
 
 4. **EV platform:** populate the `**EV platform:**` line from Step 6.
 

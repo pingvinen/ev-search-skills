@@ -43,7 +43,7 @@ Then start Claude Code in an empty directory and create your first project:
 /pingvinen-ev-search:new-project my-2026-search
 ```
 
-That seeds the workspace (`state.md`, `car-template.md`, `projects/`) via the plugin's
+That seeds the workspace (`state.md` and a `projects/` directory) via the plugin's
 bundled `ev-scaffold` tool and creates the project. Answer the prompts, then use
 `/pingvinen-ev-search:search`, `/pingvinen-ev-search:detail "Volvo EX30"`, and
 `/pingvinen-ev-search:compare`.

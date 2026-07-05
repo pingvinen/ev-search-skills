@@ -44,7 +44,7 @@ Record the full list of file paths returned. The count of paths is the number of
 
 For each file path from Step 2, use the Read tool to load the file content.
 
-From each file, extract the following fields (matching the rows in `car-template.md`):
+From each file, extract the following fields (matching the rows in the per-car template shipped with the plugin, `${CLAUDE_PLUGIN_ROOT}/reference/car-template.md`):
 
 **15 Specs rows:**
 1. WLTP range (km)

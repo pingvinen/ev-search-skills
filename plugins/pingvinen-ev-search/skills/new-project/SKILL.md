@@ -14,10 +14,10 @@ Follow these steps in order:
 
 **Step 0 — Ensure the workspace is seeded**
 
-Run `Bash(ev-scaffold)`. This bundled plugin tool creates `state.md` and
-`car-template.md` in the workspace if they are missing (it never overwrites
-existing files) and ensures a `projects/` directory exists. These are the files
-the other skills read. Proceed once it completes.
+Run `Bash(ev-scaffold)`. This bundled plugin tool creates the workspace's
+`state.md` if it is missing (it never overwrites existing files) and ensures a
+`projects/` directory exists. `state.md` is per-workspace state the skills read
+and update. Proceed once it completes.
 
 **Step 1 — Check for existing project (D-10: never overwrite)**
 

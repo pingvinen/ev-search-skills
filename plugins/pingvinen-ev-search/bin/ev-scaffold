@@ -4,8 +4,13 @@
 #
 # Bundled inside the pingvinen-ev-search plugin. While the plugin is enabled,
 # this file is on the Bash tool's PATH, so skills can invoke it as a bare
-# `ev-scaffold` command. It creates the workspace files the skills read
-# (state.md, car-template.md) and a projects/ directory.
+# `ev-scaffold` command. It creates the per-workspace state the skills mutate
+# (state.md) and a projects/ directory.
+#
+# It deliberately seeds ONLY genuine per-workspace state. Read-only references
+# such as the per-car file format (reference/car-template.md) stay inside the
+# plugin and are consulted there, so they always track the installed plugin
+# version instead of freezing at a stale scaffolded copy.
 #
 # Idempotent: it NEVER overwrites an existing file — safe to run repeatedly.
 #
@@ -33,7 +38,6 @@ seed() {
 }
 
 mkdir -p "$DEST/projects"
-seed "$TPL_DIR/state.md"        "$DEST/state.md"
-seed "$TPL_DIR/car-template.md" "$DEST/car-template.md"
+seed "$TPL_DIR/state.md" "$DEST/state.md"
 
 printf 'Workspace ready in %s\n' "$DEST"
