@@ -23,9 +23,18 @@ plugins/pingvinen-ev-search/
   .claude-plugin/plugin.json                         # plugin "pingvinen-ev-search" v0.1.0
   skills/{search,detail,compare,new-project,research,switch-project}/SKILL.md
   bin/ev-scaffold                                    # workspace seeder (Bash-tool PATH)
-  templates/{state.md,car-template.md}
+  templates/state.md                                 # seeded into workspace (mutable state)
+  reference/car-template.md                          # per-car file format — shipped, not seeded
   README.md
 ```
+
+### Post-review refinement (commit f34f58b)
+
+Following review questions: `search` confirmed integral (discovery front-door, not a
+leftover); `projects/` + `.gitignore` rules kept (they back the local-dev/test-fixture
+flow). `car-template.md` moved from `templates/` (scaffolded) to `reference/` (shipped):
+it is a read-only format the skills inline, so scaffolding froze a stale copy that never
+tracked plugin updates. `ev-scaffold` now seeds only `state.md`.
 
 - Skills `git mv`d and de-prefixed; every `/ev-<cmd>` cross-reference rewritten to
   `/pingvinen-ev-search:<cmd>` (SKILL.md files, state.md template, README, CLAUDE.md),
