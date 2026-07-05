@@ -1,0 +1,8 @@
+# Your actual car research stays local — the skills write here, but this is a
+# template repo, so research projects are not committed by default.
+# Delete/adjust these lines in your own copy if you DO want to track your research.
+projects/*
+!projects/.gitkeep
+
+# Test fixtures: throwaway project dirs used to exercise the skills (golden runs).
+projects/test-*/
