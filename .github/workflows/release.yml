@@ -13,8 +13,6 @@ env:
   MARKETPLACE_REPO: pingvinen/claude-plugins
   PLUGIN_NAME: pingvinen-ev-search
   ASSIGNEE: pingvinen
-  # Pre-create this label in the marketplace repo (deterministic color/description):
-  #   gh label create release --repo pingvinen/claude-plugins --color 0e8a16 --force
   PUBLISH_LABEL: release
 
 jobs:
