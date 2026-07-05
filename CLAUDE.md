@@ -15,15 +15,15 @@
 
 **EV Research Skills**
 
-A Claude Code **plugin** (`pingvinen-ev-search`), published via this repo's plugin marketplace (`pingvinen`), that helps research and compare electric vehicles for the Danish market. The skills fetch data from known EV sites (ev-database.org, FDM, greengarage.dk) and produce per-car research files and comparison tables. A living tool that stays useful as new models release.
+A Claude Code **plugin** (`pingvinen-ev-search`), published through the shared `pingvinen/claude-plugins` marketplace, that helps research and compare electric vehicles for the Danish market. The skills fetch data from known EV sites (ev-database.org, FDM, greengarage.dk) and produce per-car research files and comparison tables. A living tool that stays useful as new models release.
 
-The plugin is decoupled from research data: the skills, the `bin/ev-scaffold` seeder, and the templates ship in the plugin, while each user's searches live in their own workspace (see below). Users install with `/plugin marketplace add pingvinen/ev-search-skills` + `/plugin install pingvinen-ev-search@pingvinen`, then run `/pingvinen-ev-search:new-project` — which seeds the workspace via `ev-scaffold` and creates the first project. For local development, `claude --plugin-dir plugins/pingvinen-ev-search` loads the plugin straight from a checkout.
+The plugin is decoupled from research data: the skills, the `bin/ev-scaffold` seeder, and the templates ship in the plugin, while each user's searches live in their own workspace (see below). Users install with `/plugin marketplace add pingvinen/claude-plugins` + `/plugin install pingvinen-ev-search@pingvinen`, then run `/pingvinen-ev-search:new-project` — which seeds the workspace via `ev-scaffold` and creates the first project. For local development, `claude --plugin-dir plugins/pingvinen-ev-search` loads the plugin straight from a checkout. Releases are cut by `semantic-release` (`.github/workflows/release.yml`): it bumps the version in `plugin.json`, tags `vX.Y.Z`, and opens a PR to the marketplace repo pinning that tag — so `main` here stays a work branch.
 
 **Core Value:** Quickly go from "what EVs match my criteria?" to informed, comparable research files — without manually trawling multiple sites.
 
 ### Constraints
 
-- **Platform**: A Claude Code plugin (`plugins/pingvinen-ev-search/`) published via this repo's plugin marketplace (`.claude-plugin/marketplace.json`, name `pingvinen`); skills invoked as `/pingvinen-ev-search:<name>`. A bundled `bin/ev-scaffold` tool (on the Bash-tool PATH when the plugin is enabled) seeds a workspace deterministically
+- **Platform**: A Claude Code plugin (`plugins/pingvinen-ev-search/`) published through the separate `pingvinen/claude-plugins` marketplace repo (which pins the plugin to a released `vX.Y.Z` tag); skills invoked as `/pingvinen-ev-search:<name>`. A bundled `bin/ev-scaffold` tool (on the Bash-tool PATH when the plugin is enabled) seeds a workspace deterministically
 - **Data freshness**: Skills must fetch live data, not rely on training data
 - **Input**: All search criteria come from a project's `brief.md` (created by `/pingvinen-ev-search:new-project`) — no hardcoded parameters. `state.md` tracks the active project
 - **Output**: Per-car files and comparison tables under `projects/<name>/` in the user's workspace — never committed back into the plugin

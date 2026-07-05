@@ -21,7 +21,7 @@ Invoked as `/pingvinen-ev-search:<skill>`:
 ## Install
 
 ```
-/plugin marketplace add pingvinen/ev-search-skills
+/plugin marketplace add pingvinen/claude-plugins
 /plugin install pingvinen-ev-search@pingvinen
 ```
 

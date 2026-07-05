@@ -12,8 +12,10 @@ per-car research files and comparison tables you can diff in git.
 > **Danish-market focused:** pricing is in DKK, tests come from FDM, and availability is
 > checked for Denmark. The skills are still useful elsewhere, but the sources are DK-centric.
 
-This repository is a Claude Code **plugin marketplace** (`pingvinen`) hosting one plugin,
-`pingvinen-ev-search`.
+This repository holds the Claude Code **plugin** `pingvinen-ev-search` (under
+`plugins/`). It is published through the shared **[`pingvinen/claude-plugins`](https://github.com/pingvinen/claude-plugins)**
+marketplace, which pins this plugin to a released tag — so `main` here stays a
+work-in-progress branch and only tagged releases are ever served.
 
 ## What's inside
 
@@ -33,7 +35,7 @@ The plugin's skills are invoked as `/pingvinen-ev-search:<skill>`:
 In a Claude Code session:
 
 ```
-/plugin marketplace add pingvinen/ev-search-skills
+/plugin marketplace add pingvinen/claude-plugins
 /plugin install pingvinen-ev-search@pingvinen
 ```
 
