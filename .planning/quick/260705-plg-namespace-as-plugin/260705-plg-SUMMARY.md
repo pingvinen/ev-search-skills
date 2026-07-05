@@ -18,7 +18,6 @@ marketplace** (`pingvinen`) in this repo. Invocations are now
 ### Structure
 
 ```
-.claude-plugin/marketplace.json                     # marketplace "pingvinen"
 plugins/pingvinen-ev-search/
   .claude-plugin/plugin.json                         # plugin "pingvinen-ev-search" v0.1.0
   skills/{search,detail,compare,new-project,research,switch-project}/SKILL.md
@@ -26,7 +25,12 @@ plugins/pingvinen-ev-search/
   templates/state.md                                 # seeded into workspace (mutable state)
   reference/car-template.md                          # per-car file format — shipped, not seeded
   README.md
+.releaserc.json                                      # semantic-release config
+.github/workflows/release.yml                        # release + publish-to-marketplace
 ```
+
+(The `.claude-plugin/marketplace.json` catalog was later moved out to a separate
+marketplace repo — see the release-infrastructure note below.)
 
 ### Post-review refinement (commit f34f58b)
 
@@ -52,20 +56,40 @@ tracked plugin updates. `ev-scaffold` now seeds only `state.md`.
 - All skill frontmatter (`context: fork`, `agent: Explore`, `disable-model-invocation`,
   `argument-hint`, `allowed-tools`) preserved across the move; `ev-scaffold` is `+x`.
 
+### Release infrastructure (commit fa795e6)
+
+Adopted a one-repo-per-plugin + shared-marketplace layout so a second plugin slots in and
+`main` here stays a work branch:
+
+- Catalog moved OUT of this repo to a separate `pingvinen/claude-plugins` marketplace repo
+  (scaffold staged in scratchpad: `marketplace-repo/`). Its entry pins this plugin to a
+  `vX.Y.Z` tag via a `git-subdir` source → only tagged commits are served.
+- `.releaserc.json` — semantic-release writes the version into `plugin.json` (exec+jq),
+  commits it back (git) so the tag carries it, cuts a GitHub Release (github). Conventional
+  Commits drive versioning.
+- `.github/workflows/release.yml` (`workflow_dispatch`), modelled on the voksenium
+  `cycjimmy/semantic-release-action` + `RELEASE_TOKEN_PAT` setup: `release` job tags/releases,
+  `publish-to-marketplace` job opens a PR to the marketplace repo pinning the new tag.
+  Both `jq` mutations dry-run-verified.
+
 ## Install (new flow)
 
 ```
-/plugin marketplace add pingvinen/ev-search-skills
+/plugin marketplace add pingvinen/claude-plugins
 /plugin install pingvinen-ev-search@pingvinen
 /pingvinen-ev-search:new-project my-2026-search
 ```
 
-## Follow-ups (not done here — out of this repo's scope)
+## Follow-ups (not done here — need action outside this repo / decisions)
 
+- **Create the `pingvinen/claude-plugins` marketplace repo** from the staged scaffold
+  (`scratchpad/marketplace-repo/`). Confirm the repo name — `claude-plugins` is a placeholder
+  used in the workflow env + docs; rename in lockstep if changed.
+- **Add the `RELEASE_TOKEN_PAT` secret** to this repo — a token with `contents:write` here
+  AND `contents:write`+`pull-requests:write` on the marketplace repo.
 - **Delete `Formula/ev-search-skills.rb` in the separate `pingvinen/homebrew-tap` repo**
-  and repoint its README here. Documented in PUBLISHING.md.
-- Optional: `claude plugin validate` could not fully run in this sandbox (git-auth noise);
-  run it locally before publishing.
-- Optional: the repo-root `projects/` dir and `.gitignore` project rules are now vestigial
-  (the repo is a plugin source, not a workspace) — left as-is; prune if desired.
+  and repoint its README. Documented in PUBLISHING.md.
+- Optional: run `claude plugin validate` locally (sandbox git-auth noise blocked it here).
+- Optional: repo-root `projects/` + `.gitignore` rules kept intentionally (back the
+  local-dev/test-fixture flow).
 - Work is on branch `quick/namespace-as-plugin`; open a PR when ready.
