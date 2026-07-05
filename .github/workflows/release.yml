@@ -12,6 +12,10 @@ on:
 env:
   MARKETPLACE_REPO: pingvinen/claude-plugins
   PLUGIN_NAME: pingvinen-ev-search
+  ASSIGNEE: pingvinen
+  # Pre-create this label in the marketplace repo (deterministic color/description):
+  #   gh label create release --repo pingvinen/claude-plugins --color 0e8a16 --force
+  PUBLISH_LABEL: release
 
 jobs:
   # ====================================================================
@@ -66,7 +70,8 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.RELEASE_TOKEN_PAT }}
-          assignees: pingvinen
+          assignees: ${{ env.ASSIGNEE }}
+          labels: ${{ env.PUBLISH_LABEL }}
           branch: publish/${{ env.PLUGIN_NAME }}-v${{ needs.release.outputs.new-release-version }}
           title: "Publish ${{ env.PLUGIN_NAME }} v${{ needs.release.outputs.new-release-version }}"
           commit-message: "chore: pin ${{ env.PLUGIN_NAME }} to v${{ needs.release.outputs.new-release-version }}"
