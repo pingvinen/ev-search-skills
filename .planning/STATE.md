@@ -31,7 +31,7 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 Phase: 04 — Danish Enrichment
 Plan: Not started
 Status: Ready to plan next phase
-Last activity: 2026-07-01 — Phase 03 complete and verified, transitioned
+Last activity: 2026-07-05 — Quick task 260705-plg: converted suite to the pingvinen-ev-search plugin
 
 Progress: [██░░░░░░░░] 25%
 
@@ -108,6 +108,7 @@ None yet.
 | 260323-q2h | Update planning docs for multi-project architecture (PROJECT.md, REQUIREMENTS.md, ROADMAP.md) | 2026-03-23 | 82f7b0d | [260323-q2h-update-planning-docs-for-multi-project-a](./quick/260323-q2h-update-planning-docs-for-multi-project-a/) |
 | 260323-tec | Add new car research requirements: pricing tiers, wireless Android Auto, brand quality history, EV-native platform, BMW budget exception | 2026-03-23 | 2bc3e15 | [260323-tec-add-new-car-research-requirements-pricin](./quick/260323-tec-add-new-car-research-requirements-pricin/) |
 | 260325-otn | Add tire research (global sources, median-of-histogram scoring, expandable pool) and purchase type (new/used/leasing) requirements | 2026-03-25 | 482d4de | [260325-otn-add-tire-research-purchase-type-and-inte](./quick/260325-otn-add-tire-research-purchase-type-and-inte/) |
+| 260705-plg | Convert the skills suite into the `pingvinen-ev-search` Claude Code plugin (marketplace + plugin manifests, namespaced `/pingvinen-ev-search:<skill>` invocations, bundled `ev-scaffold`, Homebrew retired) | 2026-07-05 | f42ef51 | [260705-plg-namespace-as-plugin](./quick/260705-plg-namespace-as-plugin/) |
 
 ## Session Continuity
 
