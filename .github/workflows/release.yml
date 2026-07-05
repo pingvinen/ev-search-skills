@@ -66,6 +66,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.RELEASE_TOKEN_PAT }}
+          assignees: pingvinen
           branch: publish/${{ env.PLUGIN_NAME }}-v${{ needs.release.outputs.new-release-version }}
           title: "Publish ${{ env.PLUGIN_NAME }} v${{ needs.release.outputs.new-release-version }}"
           commit-message: "chore: pin ${{ env.PLUGIN_NAME }} to v${{ needs.release.outputs.new-release-version }}"
